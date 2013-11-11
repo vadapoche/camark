@@ -19,40 +19,10 @@ function regexExtract($text, $regex, $regs, $nthValue) {
             return $result;
         }
 
-  function table2td2array($content, $label_strip=true, $value_strip=false){
-            $rowArr = explode('<tr>', $content);
-            array_shift($rowArr);
-            $tmp_ret_arr = array();
+       
 
-
-            if (!empty($rowArr) && is_array($rowArr)) {
-                foreach ($rowArr as $key => $value) {
-                    $tmpRowArr = explode('<td', $value);
-                    array_shift($tmpRowArr);
-                    $tmpLabel = strip_tags($this->getValueByTagName($tmpRowArr[0], '>', '</td>'));
-                    if($label_strip){
-                        $tmpLabel = strip_tags($tmpLabel);
-                    }
-                    $tmpValue = strip_tags($this->getValueByTagName($tmpRowArr[1], '>', '</td>'));
-                    if($value_strip){
-                        $tmpValue = strip_tags($tmpValue);
-                    }
-
-                    $tmpLabel = trim($tmpLabel);
-                    $tmpValue = trim($tmpValue);
-
-                    if(!empty($tmpLabel)){
-                        $tmp_ret_arr[$tmpLabel] = $tmpValue;
-                    }
-
-
-                }
-            }
-            return $tmp_ret_arr;
-        }
-
-
-
+function markscraper($rollno)
+{
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 curl_setopt($ch, CURLOPT_COOKIEJAR, "/tmp/cookieFileName");
@@ -89,7 +59,7 @@ $result = curl_exec($ch);
 
 
 
-$data ="__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=".rawurlencode($viewstate)."&TxtRollNo=11pw06&BtnSubmit=Submit";
+$data ="__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=".rawurlencode($viewstate)."&TxtRollNo={$rollno}&BtnSubmit=Submit";
 
 curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 curl_setopt($ch, CURLOPT_COOKIEFILE, "/tmp/cookieFileName");
@@ -99,6 +69,6 @@ curl_setopt($ch, CURLOPT_POSTFIELDS,$data);
 
 $result = curl_exec($ch);
 
-echo $result;
-
+return $result;
+}
 ?>

@@ -80,7 +80,6 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated method stub
 				String choice = parent.getItemAtPosition(pos).toString();
 				if (choice == "Test wise") {
-					Log.d("DEBUG", "hello");
 					explistadapter = new ExpandableListAdapter(activity,
 							testwisesparsearray);
 					expListView.setAdapter(explistadapter);
@@ -93,6 +92,8 @@ public class MainActivity extends Activity {
 							subjectwisesparsearray);
 					expListView.setAdapter(explistadapter);
 					}
+					else
+						Log.d("DEBUG","null");
 				}
 
 			}
@@ -158,8 +159,8 @@ public class MainActivity extends Activity {
 				urlconnection.disconnect();
 				JSONArray array = new JSONArray(result);
 				result = array.getString(0);
-
-				JSONArray jsontable = array.getJSONArray(0);
+				
+				JSONArray jsontable = array.getJSONArray(1);
 				JSONArray jsonrow;
 				Map<String, String> subjectmarktemp;
 				for (int i = 0; i < jsontable.length(); i++) {
@@ -190,6 +191,9 @@ public class MainActivity extends Activity {
 				Marks marksobject = new Marks();
 				testwisesparsearray = new SparseArray<Groupmarks>();
 				for (int i = 1; i < indexjsonarray.length(); i++) {
+					if(indexjsonarray.getString(i).compareTo("*") == 0) //sometimes json array may contain * as an entry like CA-1,CA-2.
+																		//To avoid that, this checking is needed
+							continue;
 					testwisemarks = new Groupmarks(indexjsonarray.getString(i));
 					Log.d("DEBUG", indexjsonarray.getString(i));
 					marksobject = new Marks();
@@ -211,12 +215,16 @@ public class MainActivity extends Activity {
 				Groupmarks groupMarks = null;
 				int i = 0;
 				for (Entry entry : subjectmarks.entrySet()) {
+					
 					groupMarks = new Groupmarks((String) entry.getKey());
 					temp = new Marks();
 					tempmap = subjectmarks.get(entry.getKey());
 					for (Entry subentry : tempmap.entrySet()) {
 						String key = subentry.getKey().toString();
 						String value = subentry.getValue().toString();
+						if(key.compareTo("*")==0) //sometimes json array may contain * as an entry like CA-1,CA-2.
+													//To avoid that, this checking is needed
+							continue;
 						temp.child.put(key, value);
 					}
 					groupMarks.marks.add(temp);

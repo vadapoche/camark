@@ -1,7 +1,9 @@
 <?php
 
 require_once("dom/simple_html_dom.php");
-$html = file_get_html('data_prod.html');
+require_once("camark.php");
+$html = markscraper("09pw03");
+$html = str_get_html($html);
 
 $secondtable	=	$html->find('table',2);	
 $td_array				=	array();
@@ -16,10 +18,12 @@ foreach($secondtable->next_sibling()->find('table') as $table)
 	foreach( $tr->find('td') as $element)
 	  {
 			$column	=	 $element->next_sibling()->plaintext;
+			if($column==null || $column=="")
+				$column="*";
 			if((strpos($column,'Max')===FALSE) && $column!=null)
 				array_push($td_array,$column);
 		}
-		if(count($td_array)!=0)
+		if(count($td_array)>1) //previously !=0
 	  	array_push($tr_array,$td_array);
 		$td_array = array();
 	}
