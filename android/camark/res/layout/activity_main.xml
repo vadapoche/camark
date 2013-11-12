@@ -15,20 +15,23 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
- 
-    <ExpandableListView 
-        android:id="@+id/mark_list"
-         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/spinner1">        
-    </ExpandableListView>
 
+ 
+  <LinearLayout
+    	    android:id="@+id/expList"
+       	 	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_below="@+id/spinner1"
+        	android:orientation="vertical" >
+    </LinearLayout>        
+ 
+	  
+	
     <Spinner
         android:id="@+id/spinner1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="24dp"
-         />
- 
+        android:layout_marginRight="24dp" />
+
 </RelativeLayout>
