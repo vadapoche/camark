@@ -2,31 +2,29 @@ package com.columbusagain.camark;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.text.Editable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -34,15 +32,14 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 	TextView view1;
 	ProgressBar progress1;
 	List<String> groupList;
@@ -59,16 +56,22 @@ public class MainActivity extends Activity {
 
 	List<ExpandableListView> expandableListView = new ArrayList<ExpandableListView>();
 
+	ViewPager subjectwisePager, testwisePager;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		Intent intent = getIntent();
+		String rollno = intent.getExtras().getString("rollno").trim();
 		progress1 = (ProgressBar) findViewById(R.id.progressBar1);
 		expListView = (ExpandableListView) findViewById(R.id.mark_list);
+		subjectwisePager = (ViewPager) findViewById(R.id.subjectWiseMarksPager);
+		testwisePager = (ViewPager) findViewById(R.id.testWiseMarksPager);
 		Log.d("camark", "start");
 		new FetchJson()
-				.execute("http://citibytes.columbusagain.com/camark/striptable.php");
+				.execute("http://citibytes.columbusagain.com/camark/striptable.php?rollno="
+						+ rollno);
 		Log.d("camark", "stop");
 		activity = this;
 		spinner = (Spinner) findViewById(R.id.spinner1);
@@ -89,12 +92,10 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated method stub
 				String choice = parent.getItemAtPosition(pos).toString();
 				if (choice == "Test wise") {
-					initializeExpListViewForTestwiseMarks();
-					initializeAdapterForTesttwiseMarks();
+					displayTestwiseMarks();
 				} else {
 					if (subjectwisesparsearraylist.size() != 0) {
-						initializeExpListViewForSubjectwiseMarks();
-						initializeAdapterForSubjectwiseMarks();
+						displaySubjectwiseMarks();
 					} else
 						Log.d("DEBUG", "subjectwisesparsearraylist null");
 				}
@@ -108,6 +109,61 @@ public class MainActivity extends Activity {
 			}
 		});
 
+	}
+
+	private class MyPageAdapter extends FragmentPagerAdapter {
+		private List<Fragment> fragments;
+
+		public MyPageAdapter(FragmentManager fm, List<Fragment> fragments) {
+			super(fm);
+			this.fragments = fragments;
+		}
+
+		@Override
+		public Fragment getItem(int postion) {
+			// TODO Auto-generated method stub
+			return this.fragments.get(postion);
+		}
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return this.fragments.size();
+		}
+	}
+
+	private void displayTestwiseMarks() {
+		subjectwisePager.setVisibility(View.GONE);
+		testwisePager.setVisibility(View.VISIBLE);
+		testwisePager.removeAllViews();
+		List<Fragment> fragments = getFragments(testwisesparsearraylist.size(),
+				testwisesparsearraylist);
+		MyPageAdapter pageAdapter = new MyPageAdapter(
+				getSupportFragmentManager(), fragments);
+		pageAdapter.notifyDataSetChanged();
+		testwisePager.setAdapter(pageAdapter);
+	}
+
+	private void displaySubjectwiseMarks() {
+		testwisePager.setVisibility(View.GONE);
+		subjectwisePager.removeAllViews();
+		subjectwisePager.setVisibility(View.VISIBLE);
+		List<Fragment> fragments = getFragments(
+				subjectwisesparsearraylist.size(), subjectwisesparsearraylist);
+		MyPageAdapter pageAdapter = new MyPageAdapter(
+				getSupportFragmentManager(), fragments);
+		pageAdapter.notifyDataSetChanged();
+		subjectwisePager.setAdapter(pageAdapter);
+	}
+
+	private List<Fragment> getFragments(int count,
+			List<SparseArray<Groupmarks>> sparseArrayList) {
+		Log.d("count", count + " ");
+		List<Fragment> fList = new ArrayList<Fragment>();
+		for (int i = 0; i < count; i++) {
+			fList.add(MyFragment.newInstance(sparseArrayList.get(i)));
+		}
+		return fList;
 	}
 
 	@Override
@@ -129,8 +185,6 @@ public class MainActivity extends Activity {
 			JSONArray json;
 			index = new ArrayList<String>();
 			groupList = new ArrayList<String>();
-
-			
 
 			try {
 				url = new URL(params[0]);
@@ -168,9 +222,9 @@ public class MainActivity extends Activity {
 					JSONArray jsontable = array.getJSONArray(k);
 					JSONArray jsonrow;
 					Map<String, String> subjectmarktemp;
-					if(!index.isEmpty())
+					if (!index.isEmpty())
 						index.clear();
-					if(!groupList.isEmpty())
+					if (!groupList.isEmpty())
 						groupList.clear();
 					subjectmarks = new HashMap<String, Map<String, String>>();
 					for (int i = 0; i < jsontable.length(); i++) {
@@ -197,7 +251,7 @@ public class MainActivity extends Activity {
 						}
 						subjectmarks.put(groupList.get(i - 1), subjectmarktemp);
 					}
-					
+
 					Groupmarks testwisemarks;
 					JSONArray indexjsonarray = new JSONArray();
 					indexjsonarray = jsontable.getJSONArray(0);
@@ -224,7 +278,7 @@ public class MainActivity extends Activity {
 					testwisesparsearraylist.add(testwisesparsearray);
 					Log.d("DEBUG", "testwisesparsearraylist: "
 							+ testwisesparsearraylist.size());
-					
+
 					subjectwisesparsearray = new SparseArray<Groupmarks>();
 					Marks temp;
 					Map<String, String> tempmap = new HashMap<String, String>();
@@ -271,6 +325,7 @@ public class MainActivity extends Activity {
 			 * explistadapter = new ExpandableListAdapter(activity,
 			 * subjectwisesparsearraylist.get(0));
 			 * expListView.setAdapter(explistadapter);
+			 * 
 			 * expListView.setOnChildClickListener(new OnChildClickListener() {
 			 * 
 			 * @Override public boolean onChildClick(ExpandableListView parent,
@@ -278,8 +333,11 @@ public class MainActivity extends Activity {
 			 * 
 			 * // TODO Auto-generated method stub return false; } });
 			 */
-			initializeExpListViewForSubjectwiseMarks();
-			initializeAdapterForSubjectwiseMarks();
+			// initializeExpListViewForSubjectwiseMarks();
+			// initializeAdapterForSubjectwiseMarks();
+
+			displaySubjectwiseMarks();
+
 			progress1.setVisibility(View.INVISIBLE);
 		}
 	}
