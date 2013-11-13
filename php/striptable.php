@@ -2,7 +2,7 @@
 
 require_once("dom/simple_html_dom.php");
 require_once("camark.php");
-$html = markscraper("09pw03");
+$html = markscraper(trim($_REQUEST['rollno']));
 $html = str_get_html($html);
 
 $secondtable	=	$html->find('table',2);	
