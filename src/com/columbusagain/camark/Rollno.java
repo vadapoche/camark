@@ -6,13 +6,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.columbusagain.camark.view.MyButton;
+
 public class Rollno extends Activity {
 	EditText rollno;
-	Button submit;
+	MyButton submit;
 	Activity mainactivity;
 
 	@Override
@@ -20,13 +21,13 @@ public class Rollno extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_rollno);
 		rollno = (EditText) findViewById(R.id.rollnotext);
-		submit = (Button) findViewById(R.id.rollnobtn);
+		submit = (MyButton) findViewById(R.id.rollnobtn);
 		submit.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if (rollno.getText().toString().compareTo("") == 0) {
+				if ("".equals(rollno.getText())) {
 					Toast.makeText(mainactivity, "Please enter a roll number",
 							Toast.LENGTH_SHORT).show();
 				} else {

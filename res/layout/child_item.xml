@@ -4,20 +4,24 @@
     android:layout_height="wrap_content"
     android:padding="10dp" >
 
-    <TextView
+    <com.columbusagain.camark.view.MyTextView
         android:id="@+id/test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/mark"
-        android:paddingLeft="25dp" />
+        android:paddingLeft="25dp"
+        android:textColor="@android:color/white"
+        android:textSize="17sp" />
 
-    <TextView
+    <com.columbusagain.camark.view.MyTextView
         android:id="@+id/mark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:contentDescription="@string/app_name" />
+        android:contentDescription="@string/app_name"
+        android:textColor="@android:color/white"
+        android:textSize="17sp" />
 
 </RelativeLayout>

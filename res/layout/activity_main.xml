@@ -12,8 +12,8 @@
     <ProgressBar
         android:id="@+id/progressBar1"
         style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_centerInParent="true" />
 
     <LinearLayout
@@ -24,30 +24,30 @@
         android:layout_marginTop="15dp"
         android:orientation="horizontal" >
 
-        <TextView
+        <com.columbusagain.camark.view.MyTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
+        <com.columbusagain.camark.view.MyTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
             android:text="NAME:"
             android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
+        <com.columbusagain.camark.view.MyTextView
             android:id="@+id/studentName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@android:color/darker_gray"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -59,28 +59,28 @@
         android:layout_marginTop="15dp"
         android:orientation="horizontal" >
 
-        <TextView
+        <com.columbusagain.camark.view.MyTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
-        <TextView
+        <com.columbusagain.camark.view.MyTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
             android:text="ROLL NUMBER:"
             android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
+        <com.columbusagain.camark.view.MyTextView
             android:id="@+id/studentRollNumber"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@android:color/darker_gray"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -89,8 +89,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rollNumberLayout"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="60dp" />
+        android:layout_marginTop="60dp"
+        android:background="@drawable/btn_dropdown" />
 
     <android.support.v4.view.ViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -107,6 +107,16 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/spinner1"
         android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/dotsScrollbarHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal" >
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/expList"

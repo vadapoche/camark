@@ -18,6 +18,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.columbusagain.camark.view.MyTextView;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -29,77 +31,87 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity {
-	TextView view1;
-	ProgressBar progress1;
-	List<String> groupList;
-	SparseArray<Groupmarks> testwisesparsearray;
-	Map<String, Map<String, String>> subjectmarks;
-	List<String> index;
-	ExpandableListView expListView;
-	ExpandableListAdapter explistadapter;
-	Activity activity;
-	Spinner spinner;
-	SparseArray<Groupmarks> subjectwisesparsearray;
-	List<SparseArray<Groupmarks>> subjectwisesparsearraylist = new ArrayList<SparseArray<Groupmarks>>();
-	List<SparseArray<Groupmarks>> testwisesparsearraylist = new ArrayList<SparseArray<Groupmarks>>();
 
-	List<ExpandableListView> expandableListView = new ArrayList<ExpandableListView>();
+	private ProgressBar mLoadingProgressBar;
 
-	ViewPager subjectwisePager, testwisePager;
+	private Activity mActivity;
 
-	TextView mStudentName, mStudentRollNo;
+	private Spinner mSpinner;
+
+	private List<String> mGroupList;
+
+	private List<String> mIndex;
+
+	private int mCurrentPage;
+
+	private int mTotalPages;
+
+	private LinearLayout mDotsScrollBarHolder;
+
+	private SparseArray<Groupmarks> mTestwiseSparseArray;
+
+	private SparseArray<Groupmarks> mSubjectwiseSparseArray;
+
+	private Map<String, Map<String, String>> mSubjectToMarks;
+
+	private List<SparseArray<Groupmarks>> mSubjectwiseSparseArrayList = new ArrayList<SparseArray<Groupmarks>>();
+
+	private List<SparseArray<Groupmarks>> mTestwiseSpareArrayList = new ArrayList<SparseArray<Groupmarks>>();
+
+	private ViewPager mSubjectwiseViewPager, mTestwiseViewPager;
+
+	private MyTextView mStudentName, mStudentRollNo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		itemsFindViewById();
+		initializeViewPagerListener();
 		Intent intent = getIntent();
 		String rollno = intent.getExtras().getString("rollno").trim();
-		progress1 = (ProgressBar) findViewById(R.id.progressBar1);
-		expListView = (ExpandableListView) findViewById(R.id.mark_list);
-		subjectwisePager = (ViewPager) findViewById(R.id.subjectWiseMarksPager);
-		testwisePager = (ViewPager) findViewById(R.id.testWiseMarksPager);
-		mStudentName = (TextView) findViewById(R.id.studentName);
-		mStudentRollNo = (TextView) findViewById(R.id.studentRollNumber);
 		Log.d("camark", "start");
 		new FetchJson()
 				.execute("http://citibytes.columbusagain.com/camark/striptable.php?rollno="
 						+ rollno);
 		Log.d("camark", "stop");
-		activity = this;
-		spinner = (Spinner) findViewById(R.id.spinner1);
+		mActivity = this;
 		List<String> spinner_entries = new ArrayList<String>();
 		spinner_entries.add("Subject wise");
 		spinner_entries.add("Test wise");
 		ArrayAdapter<String> spinneradapter = new ArrayAdapter<String>(
-				activity, android.R.layout.simple_spinner_item, spinner_entries);
+				mActivity, android.R.layout.simple_spinner_item,
+				spinner_entries);
 		spinneradapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// spinneradapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(spinneradapter);
-		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+		mSpinner.setAdapter(spinneradapter);
+		mSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
-				// TODO Auto-generated method stub
 				String choice = parent.getItemAtPosition(pos).toString();
 				if (choice == "Test wise") {
 					displayTestwiseMarks();
+					mTotalPages = mTestwiseSpareArrayList.size();
+					mCurrentPage = mTestwiseViewPager.getCurrentItem();
+					updateIndicator(mCurrentPage);
 				} else {
-					if (subjectwisesparsearraylist.size() != 0) {
+					if (mSubjectwiseSparseArrayList.size() != 0) {
 						displaySubjectwiseMarks();
+						mTotalPages = mSubjectwiseSparseArrayList.size();
+						mCurrentPage = mSubjectwiseViewPager.getCurrentItem();
+						updateIndicator(mCurrentPage);
 					} else
 						Log.d("DEBUG", "subjectwisesparsearraylist null");
 				}
@@ -108,11 +120,68 @@ public class MainActivity extends FragmentActivity {
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
 
 			}
 		});
+	}
 
+	private void itemsFindViewById() {
+		mLoadingProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
+		mSubjectwiseViewPager = (ViewPager) findViewById(R.id.subjectWiseMarksPager);
+		mTestwiseViewPager = (ViewPager) findViewById(R.id.testWiseMarksPager);
+		mStudentName = (MyTextView) findViewById(R.id.studentName);
+		mStudentRollNo = (MyTextView) findViewById(R.id.studentRollNumber);
+		mSpinner = (Spinner) findViewById(R.id.spinner1);
+		mDotsScrollBarHolder = (LinearLayout) findViewById(R.id.dotsScrollbarHolder);
+	}
+
+	private void initializeViewPagerListener() {
+		mSubjectwiseViewPager
+				.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+					@Override
+					public void onPageSelected(int position) {
+						mCurrentPage = position;
+						updateIndicator(mCurrentPage);
+					}
+
+					@Override
+					public void onPageScrolled(int arg0, float arg1, int arg2) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onPageScrollStateChanged(int arg0) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+
+		mTestwiseViewPager
+				.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+					@Override
+					public void onPageSelected(int position) {
+						mCurrentPage = position;
+						updateIndicator(mCurrentPage);
+					}
+
+					@Override
+					public void onPageScrolled(int arg0, float arg1, int arg2) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onPageScrollStateChanged(int state) {
+						switch (state) {
+						case 0:
+							updateIndicator(mCurrentPage);
+							break;
+						}
+					}
+				});
 	}
 
 	private class MyPageAdapter extends FragmentPagerAdapter {
@@ -125,44 +194,41 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		public Fragment getItem(int postion) {
-			// TODO Auto-generated method stub
 			return this.fragments.get(postion);
 		}
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return this.fragments.size();
 		}
 	}
 
 	private void displayTestwiseMarks() {
-		subjectwisePager.setVisibility(View.GONE);
-		testwisePager.setVisibility(View.VISIBLE);
-		testwisePager.removeAllViews();
-		List<Fragment> fragments = getFragments(testwisesparsearraylist.size(),
-				testwisesparsearraylist);
+		mSubjectwiseViewPager.setVisibility(View.GONE);
+		mTestwiseViewPager.setVisibility(View.VISIBLE);
+		mTestwiseViewPager.removeAllViews();
+		List<Fragment> fragments = getFragments(mTestwiseSpareArrayList.size(),
+				mTestwiseSpareArrayList);
 		MyPageAdapter pageAdapter = new MyPageAdapter(
 				getSupportFragmentManager(), fragments);
 		pageAdapter.notifyDataSetChanged();
-		testwisePager.setAdapter(pageAdapter);
+		mTestwiseViewPager.setAdapter(pageAdapter);
 	}
 
 	private void displaySubjectwiseMarks() {
-		testwisePager.setVisibility(View.GONE);
-		subjectwisePager.removeAllViews();
-		subjectwisePager.setVisibility(View.VISIBLE);
+		mTestwiseViewPager.setVisibility(View.GONE);
+		mSubjectwiseViewPager.removeAllViews();
+		mSubjectwiseViewPager.setVisibility(View.VISIBLE);
 		List<Fragment> fragments = getFragments(
-				subjectwisesparsearraylist.size(), subjectwisesparsearraylist);
+				mSubjectwiseSparseArrayList.size(), mSubjectwiseSparseArrayList);
 		MyPageAdapter pageAdapter = new MyPageAdapter(
 				getSupportFragmentManager(), fragments);
 		pageAdapter.notifyDataSetChanged();
-		subjectwisePager.setAdapter(pageAdapter);
+		mSubjectwiseViewPager.setAdapter(pageAdapter);
 	}
 
 	private List<Fragment> getFragments(int count,
 			List<SparseArray<Groupmarks>> sparseArrayList) {
-		Log.d("count", count + " ");
 		List<Fragment> fList = new ArrayList<Fragment>();
 		for (int i = 0; i < count; i++) {
 			fList.add(MyFragment.newInstance(sparseArrayList.get(i)));
@@ -170,25 +236,18 @@ public class MainActivity extends FragmentActivity {
 		return fList;
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
 	class FetchJson extends AsyncTask<String, Integer, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
-			progress1.setVisibility(View.VISIBLE);
+			mLoadingProgressBar.setVisibility(View.VISIBLE);
 			URL url;
 			HttpURLConnection urlconnection = null;
 			InputStream in = null;
 			String result = null;
 			JSONArray json;
-			index = new ArrayList<String>();
-			groupList = new ArrayList<String>();
+			mIndex = new ArrayList<String>();
+			mGroupList = new ArrayList<String>();
 
 			try {
 				url = new URL(params[0]);
@@ -198,10 +257,8 @@ public class MainActivity extends FragmentActivity {
 				Log.d("camark", "connection created");
 
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -228,10 +285,13 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			progress1.setVisibility(View.INVISIBLE);
+			mLoadingProgressBar.setVisibility(View.INVISIBLE);
 			if (result != null) {
 				parseMarksJSON(result);
 				displaySubjectwiseMarks();
+				mTotalPages = mSubjectwiseSparseArrayList.size();
+				mCurrentPage = mSubjectwiseViewPager.getCurrentItem();
+				updateIndicator(mCurrentPage);
 			}
 		}
 	}
@@ -251,23 +311,18 @@ public class MainActivity extends FragmentActivity {
 				JSONArray jsontable = array.getJSONArray(k);
 				JSONArray jsonrow;
 				Map<String, String> subjectmarktemp;
-				if (!index.isEmpty())
-					index.clear();
-				if (!groupList.isEmpty())
-					groupList.clear();
-				subjectmarks = new HashMap<String, Map<String, String>>();
+				if (!mIndex.isEmpty())
+					mIndex.clear();
+				if (!mGroupList.isEmpty())
+					mGroupList.clear();
+				mSubjectToMarks = new HashMap<String, Map<String, String>>();
 				for (int i = 0; i < jsontable.length(); i++) {
 					jsonrow = jsontable.getJSONArray(i);
 					for (int j = 0; j < jsonrow.length(); j++) {
 						if (i == 0) {
-							index.add(jsonrow.getString(j)); // collect the
-																// index
-																// alone
-						} else if (i > 0 && j == 0) // collect the course
-													// names
-													// alone
-						{
-							groupList.add(jsonrow.getString(j));
+							mIndex.add(jsonrow.getString(j));
+						} else if (i > 0 && j == 0) {
+							mGroupList.add(jsonrow.getString(j));
 						}
 					}
 				}
@@ -275,16 +330,17 @@ public class MainActivity extends FragmentActivity {
 					jsonrow = jsontable.getJSONArray(i);
 					subjectmarktemp = new HashMap<String, String>();
 					for (int j = 1; j < jsonrow.length(); j++) {
-						subjectmarktemp.put(index.get(j), jsonrow.getString(j));
+						subjectmarktemp
+								.put(mIndex.get(j), jsonrow.getString(j));
 					}
-					subjectmarks.put(groupList.get(i - 1), subjectmarktemp);
+					mSubjectToMarks.put(mGroupList.get(i - 1), subjectmarktemp);
 				}
 
 				Groupmarks testwisemarks;
 				JSONArray indexjsonarray = new JSONArray();
 				indexjsonarray = jsontable.getJSONArray(0);
 				Marks marksobject = new Marks();
-				testwisesparsearray = new SparseArray<Groupmarks>();
+				mTestwiseSparseArray = new SparseArray<Groupmarks>();
 				for (int i = 1; i < indexjsonarray.length(); i++) {
 					if (indexjsonarray.getString(i).compareTo("*") == 0)
 						continue;
@@ -300,22 +356,22 @@ public class MainActivity extends FragmentActivity {
 					}
 
 					testwisemarks.marks.add(marksobject);
-					testwisesparsearray.append(i - 1, testwisemarks);
+					mTestwiseSparseArray.append(i - 1, testwisemarks);
 				}
-				testwisesparsearraylist.add(testwisesparsearray);
+				mTestwiseSpareArrayList.add(mTestwiseSparseArray);
 				Log.d("DEBUG", "testwisesparsearraylist: "
-						+ testwisesparsearraylist.size());
+						+ mTestwiseSpareArrayList.size());
 
-				subjectwisesparsearray = new SparseArray<Groupmarks>();
+				mSubjectwiseSparseArray = new SparseArray<Groupmarks>();
 				Marks temp;
 				Map<String, String> tempmap = new HashMap<String, String>();
 				Groupmarks groupMarks = null;
 				int i = 0;
-				for (Entry entry : subjectmarks.entrySet()) {
+				for (Entry entry : mSubjectToMarks.entrySet()) {
 
 					groupMarks = new Groupmarks((String) entry.getKey());
 					temp = new Marks();
-					tempmap = subjectmarks.get(entry.getKey());
+					tempmap = mSubjectToMarks.get(entry.getKey());
 					for (Entry subentry : tempmap.entrySet()) {
 						String key = subentry.getKey().toString();
 						String value = subentry.getValue().toString();
@@ -330,16 +386,23 @@ public class MainActivity extends FragmentActivity {
 						temp.child.put(key, value);
 					}
 					groupMarks.marks.add(temp);
-					subjectwisesparsearray.append(i, groupMarks);
+					mSubjectwiseSparseArray.append(i, groupMarks);
 					i++;
 				}
-				subjectwisesparsearraylist.add(subjectwisesparsearray);
+				mSubjectwiseSparseArrayList.add(mSubjectwiseSparseArray);
 				Log.d("DEBUG", "subjectwisesparsearraylist: "
-						+ subjectwisesparsearraylist.size());
-			}// End of jsontable forloop
+						+ mSubjectwiseSparseArrayList.size());
+			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
+	public void updateIndicator(int currentPage) {
+		mDotsScrollBarHolder.removeAllViews();
+		DotsScrollBar.createDotScrollBar(this, mDotsScrollBarHolder,
+				mCurrentPage, mTotalPages);
+		mDotsScrollBarHolder.bringToFront();
+	}
+
 }
