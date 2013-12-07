@@ -2,10 +2,23 @@
 
 require_once("dom/simple_html_dom.php");
 require_once("camark.php");
-$html = markscraper("09pw03");
+$html = markscraper(trim($_REQUEST['rollno']));
 $html = str_get_html($html);
 
-$secondtable	=	$html->find('table',2);	
+
+$error = $html->getElementById("TbNoEntry");
+if(gettype($error)=='object') 
+	{
+	 echo json_encode(array("status"=>"600","error"=>"Mark entry not available"));
+	 return;
+	}
+
+$secondtable	=	$html->find('table',2);
+
+$name =  $html->getElementById("TbStudInfo")->children(0)->children(2)->plaintext;
+$rollno =  $html->getElementById("TbStudInfo")->children(0)->children(5)->plaintext;
+
+	
 $td_array				=	array();
 $tr_array				=	array();
 $table_array		=	array();
@@ -34,7 +47,7 @@ foreach($secondtable->next_sibling()->find('table') as $table)
 
 
 array_push($all_array,$table_array);
-echo json_encode($table_array);
+echo json_encode(array('status'=>'200','name'=>$name,'rollno'=>$rollno,'data'=>$table_array));
 
 
 
