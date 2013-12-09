@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.columbusagain.camark.view.MyTextView;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -12,31 +14,25 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 	private Activity context;
-	private Map<String, Map<String, String>> subjectmarks;
-	private List<String> subject;
 
 	private SparseArray<Groupmarks> mGroups;
 
 	public ExpandableListAdapter(Activity context,
 			SparseArray<Groupmarks> mGroups) {
 		this.context = context;
-		this.subjectmarks = subjectmarks;
-		this.subject = subject;
 		this.mGroups = mGroups;
 	}
 
 	@Override
 	public Marks getChild(int groupposition, int childposition) {
 		// TODO Auto-generated method stub
-		//Log.d("DEBUG", "debug: " + groupposition + ' ' + childposition);
+		// Log.d("DEBUG", "debug: " + groupposition + ' ' + childposition);
 		return mGroups.get(groupposition).marks.get(childposition);
 	}
 
@@ -67,15 +63,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		View v;
 		for (Entry entry : child.entrySet()) {
 			v = inflater.inflate(R.layout.child_item, linearLayout, false);
-			TextView textView;
-			textView = (TextView) v.findViewById(R.id.test);
+			MyTextView textView;
+			textView = (MyTextView) v.findViewById(R.id.test);
 			textView.setText(entry.getKey().toString());
-			textView = (TextView) v.findViewById(R.id.mark);
+			textView = (MyTextView) v.findViewById(R.id.mark);
 			textView.setText(entry.getValue().toString());
 			linearLayout.addView(v);
 		}
 
-		TextView subjectview = (TextView) convertView
+		MyTextView subjectview = (MyTextView) convertView
 				.findViewById(R.id.subject);
 		// subjectview.setText(subject);
 		// TODO Auto-generated method stub
@@ -112,13 +108,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 			View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
 		String subjectname = (String) mGroups.get(groupPosition).subjectname;
-		//Log.d("DEBUG", subjectname);
+		// Log.d("DEBUG", subjectname);
 		if (convertView == null) {
 			LayoutInflater infalInflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = infalInflater.inflate(R.layout.group_item, null);
 		}
-		TextView item = (TextView) convertView.findViewById(R.id.subject);
+		MyTextView item = (MyTextView) convertView.findViewById(R.id.subject);
 		item.setTypeface(null, Typeface.BOLD);
 		item.setText(subjectname);
 		return convertView;

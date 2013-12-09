@@ -1,10 +1,7 @@
 package com.columbusagain.camark;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.http.entity.SerializableEntity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
