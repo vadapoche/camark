@@ -55,4 +55,27 @@
         android:textSize="22sp"
         android:textStyle="bold" />
 
+    <LinearLayout
+        android:id="@+id/warninglayout"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal"
+        android:alpha="0.7"
+        android:background="#252525" >
+        
+        <TextView 
+            android:id="@+id/warningtext"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:text="No internet connection">
+            
+        </TextView>        
+    </LinearLayout>
+
 </RelativeLayout>
