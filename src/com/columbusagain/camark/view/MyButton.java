@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.Button;
 
 public class MyButton extends Button {
@@ -25,10 +26,16 @@ public class MyButton extends Button {
 
 	private void init() {
 
+		try{
 		Typeface typeface = Typeface.createFromAsset(getContext().getAssets(),
-				"corpidcdlfbold.ttf");
+				"fonts/corpidcdlfbold.otf");
 		setTypeface(typeface);
 		setPaintFlags(getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
+		}
+		catch(Exception e)
+		{
+			Log.e("typeface",e.toString());
+		}
 
 	}
 

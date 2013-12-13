@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.TextView;
 
 public class MyTextView extends TextView {
@@ -24,11 +25,16 @@ public class MyTextView extends TextView {
 	}
 
 	private void init() {
-
+		try{
 		Typeface typeface = Typeface.createFromAsset(getContext().getAssets(),
-				"corpidcdlfbold.ttf");
+				"fonts/corpidcdlfbold.ttf");
 		setTypeface(typeface);
 		setPaintFlags(getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
+		}
+		catch(Exception e)
+		{
+			Log.e("typeface","corpidcdlfbold.otf");
+		}
 
 	}
 
