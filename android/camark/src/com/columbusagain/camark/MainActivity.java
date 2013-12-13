@@ -82,7 +82,7 @@ public class MainActivity extends FragmentActivity {
 		String rollno = intent.getExtras().getString("rollno").trim();
 		Log.d("camark", "start");
 		new FetchJson()
-				.execute("http://54.254.199.87/camark/striptable.php?rollno="
+				.execute("http://camark.vadapoche.in/camark/striptable.php?rollno="
 						+ rollno);
 		Log.d("camark", "stop");
 		mActivity = this;
