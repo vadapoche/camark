@@ -1,45 +1,71 @@
 package com.columbusagain.camark;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.columbusagain.camark.view.MyTextView;
+
 public class Rollno extends Activity {
-	EditText rollno;
-	Button submit;
-	Activity mainactivity;
+
+	private boolean mInternetAvailable;
+
+	private EditText mRollNumber;
+
+	private Button mSubmit;
+
+	private Activity mActivity;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_rollno);
-		rollno = (EditText) findViewById(R.id.rollnotext);
-		submit = (Button) findViewById(R.id.rollnobtn);
-		rollno.setText("10P212");
-		submit.setOnClickListener(new OnClickListener() {
-			
+		mRollNumber = (EditText) findViewById(R.id.rollnotext);
+		mSubmit = (Button) findViewById(R.id.rollnobtn);
+		mRollNumber.setText("10P212");
+		mSubmit.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if(rollno.getText().toString().compareTo("")==0)
-				{
-					Toast.makeText(mainactivity,"Please enter a roll number", Toast.LENGTH_SHORT).show();
+				if (!mInternetAvailable) {
+					Toast.makeText(Rollno.this,
+							"Please check your internet...", Toast.LENGTH_SHORT)
+							.show();
+					return;
 				}
-				else
-				{
-					Intent intent = new Intent(Rollno.this,MainActivity.class);
-					intent.putExtra("rollno", rollno.getText().toString());
+				if (mRollNumber.getText().toString().compareTo("") == 0) {
+					Toast.makeText(mActivity, "Please enter a roll number",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					Intent intent = new Intent(Rollno.this, MainActivity.class);
+					intent.putExtra("rollno", mRollNumber.getText().toString());
 					startActivity(intent);
-					
+
 				}
 			}
 		});
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		mInternetAvailable = NetworkChecker.isConnected(Rollno.this);
+		MyTextView errorMsg = (MyTextView) findViewById(R.id.noInternetMessage);
+		if (mInternetAvailable)
+			errorMsg.setVisibility(View.INVISIBLE);
+		else
+			errorMsg.setVisibility(View.VISIBLE);
+	}
+
+	public void showDevelopers(View v) {
+		Intent intent = new Intent(Rollno.this, Developers.class);
+		startActivity(intent);
 	}
 
 	@Override

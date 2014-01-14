@@ -27,36 +27,41 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
+
+import com.columbusagain.camark.view.MyTextView;
 
 public class MainActivity extends FragmentActivity {
-	TextView view1;
-	ProgressBar progress1;
-	List<String> groupList;
-	SparseArray<Groupmarks> testwisesparsearray;
-	Map<String, Map<String, String>> subjectmarks;
-	List<String> index;
-	ExpandableListView expListView;
-	ExpandableListAdapter explistadapter;
-	Activity activity;
-	Spinner spinner;
-	SparseArray<Groupmarks> subjectwisesparsearray;
-	List<SparseArray<Groupmarks>> subjectwisesparsearraylist = new ArrayList<SparseArray<Groupmarks>>();
-	List<SparseArray<Groupmarks>> testwisesparsearraylist = new ArrayList<SparseArray<Groupmarks>>();
 
-	List<ExpandableListView> expandableListView = new ArrayList<ExpandableListView>();
+	private boolean mInternetAvailable;
 
-	ViewPager subjectwisePager, testwisePager;
+	private ProgressBar mLoadingProgress;
+
+	private List<String> mGroupList;
+
+	private SparseArray<Groupmarks> mTestwiseSparseArray;
+
+	private Map<String, Map<String, String>> mSubjectMarks;
+
+	private List<String> mIndex;
+
+	private Activity mActivity;
+
+	private Spinner mSpinner;
+
+	private SparseArray<Groupmarks> mSubjectwiseSparseArray;
+
+	private List<SparseArray<Groupmarks>> mSubjectwiseSparseArrayList = new ArrayList<SparseArray<Groupmarks>>();
+
+	private List<SparseArray<Groupmarks>> mTestwiseSparseArrayList = new ArrayList<SparseArray<Groupmarks>>();
+
+	private ViewPager subjectwisePager, testwisePager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,51 +69,59 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.activity_main);
 		Intent intent = getIntent();
 		String rollno = intent.getExtras().getString("rollno").trim();
-		progress1 = (ProgressBar) findViewById(R.id.progressBar1);
-		expListView = (ExpandableListView) findViewById(R.id.mark_list);
+		mLoadingProgress = (ProgressBar) findViewById(R.id.progressBar1);
 		subjectwisePager = (ViewPager) findViewById(R.id.subjectWiseMarksPager);
 		testwisePager = (ViewPager) findViewById(R.id.testWiseMarksPager);
 		Log.d("camark", "start");
 		new FetchJson()
 				.execute("http://citibytes.columbusagain.com/camark/striptable.php?rollno="
 						+ rollno);
-		Log.d("camark", "stop");
-		activity = this;
-		spinner = (Spinner) findViewById(R.id.spinner1);
+		mActivity = this;
+		mSpinner = (Spinner) findViewById(R.id.spinner1);
 		List<String> spinner_entries = new ArrayList<String>();
 		spinner_entries.add("Subject wise");
 		spinner_entries.add("Test wise");
 		ArrayAdapter<String> spinneradapter = new ArrayAdapter<String>(
-				activity, android.R.layout.simple_spinner_item, spinner_entries);
+				mActivity, android.R.layout.simple_spinner_item,
+				spinner_entries);
 		spinneradapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// spinneradapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(spinneradapter);
-		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+		mSpinner.setAdapter(spinneradapter);
+		mSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
-				// TODO Auto-generated method stub
 				String choice = parent.getItemAtPosition(pos).toString();
 				if (choice == "Test wise") {
 					displayTestwiseMarks();
 				} else {
-					if (subjectwisesparsearraylist.size() != 0) {
+					if (mSubjectwiseSparseArrayList.size() != 0) {
 						displaySubjectwiseMarks();
 					} else
-						Log.d("DEBUG", "subjectwisesparsearraylist null");
+						Log.d("camark", "subjectwisesparsearraylist null");
 				}
 
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
 
 			}
 		});
 
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		mInternetAvailable = NetworkChecker.isConnected(MainActivity.this);
+		MyTextView errorMsg = (MyTextView) findViewById(R.id.noInternetMessage);
+		if (mInternetAvailable)
+			errorMsg.setVisibility(View.INVISIBLE);
+		else
+			errorMsg.setVisibility(View.VISIBLE);
 	}
 
 	private class MyPageAdapter extends FragmentPagerAdapter {
@@ -121,13 +134,11 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		public Fragment getItem(int postion) {
-			// TODO Auto-generated method stub
 			return this.fragments.get(postion);
 		}
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return this.fragments.size();
 		}
 	}
@@ -136,8 +147,8 @@ public class MainActivity extends FragmentActivity {
 		subjectwisePager.setVisibility(View.GONE);
 		testwisePager.setVisibility(View.VISIBLE);
 		testwisePager.removeAllViews();
-		List<Fragment> fragments = getFragments(testwisesparsearraylist.size(),
-				testwisesparsearraylist);
+		List<Fragment> fragments = getFragments(
+				mTestwiseSparseArrayList.size(), mTestwiseSparseArrayList);
 		MyPageAdapter pageAdapter = new MyPageAdapter(
 				getSupportFragmentManager(), fragments);
 		pageAdapter.notifyDataSetChanged();
@@ -149,7 +160,7 @@ public class MainActivity extends FragmentActivity {
 		subjectwisePager.removeAllViews();
 		subjectwisePager.setVisibility(View.VISIBLE);
 		List<Fragment> fragments = getFragments(
-				subjectwisesparsearraylist.size(), subjectwisesparsearraylist);
+				mSubjectwiseSparseArrayList.size(), mSubjectwiseSparseArrayList);
 		MyPageAdapter pageAdapter = new MyPageAdapter(
 				getSupportFragmentManager(), fragments);
 		pageAdapter.notifyDataSetChanged();
@@ -158,7 +169,7 @@ public class MainActivity extends FragmentActivity {
 
 	private List<Fragment> getFragments(int count,
 			List<SparseArray<Groupmarks>> sparseArrayList) {
-		Log.d("count", count + " ");
+		Log.d("camark", count + " ");
 		List<Fragment> fList = new ArrayList<Fragment>();
 		for (int i = 0; i < count; i++) {
 			fList.add(MyFragment.newInstance(sparseArrayList.get(i)));
@@ -168,7 +179,6 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
@@ -177,14 +187,13 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		protected String doInBackground(String... params) {
-			progress1.setVisibility(View.VISIBLE);
+			mLoadingProgress.setVisibility(View.VISIBLE);
 			URL url;
 			HttpURLConnection urlconnection = null;
 			InputStream in = null;
 			String result = null;
-			JSONArray json;
-			index = new ArrayList<String>();
-			groupList = new ArrayList<String>();
+			mIndex = new ArrayList<String>();
+			mGroupList = new ArrayList<String>();
 
 			try {
 				url = new URL(params[0]);
@@ -194,10 +203,8 @@ public class MainActivity extends FragmentActivity {
 				Log.d("camark", "connection created");
 
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -218,27 +225,27 @@ public class MainActivity extends FragmentActivity {
 				result = array.getString(0);
 
 				for (int k = 0; k < array.length(); k++) {
-					Log.d("DEBUG", "k: " + array.length());
+					Log.d("camark", "k: " + array.length());
 					JSONArray jsontable = array.getJSONArray(k);
 					JSONArray jsonrow;
 					Map<String, String> subjectmarktemp;
-					if (!index.isEmpty())
-						index.clear();
-					if (!groupList.isEmpty())
-						groupList.clear();
-					subjectmarks = new HashMap<String, Map<String, String>>();
+					if (!mIndex.isEmpty())
+						mIndex.clear();
+					if (!mGroupList.isEmpty())
+						mGroupList.clear();
+					mSubjectMarks = new HashMap<String, Map<String, String>>();
 					for (int i = 0; i < jsontable.length(); i++) {
 						jsonrow = jsontable.getJSONArray(i);
 						for (int j = 0; j < jsonrow.length(); j++) {
 							if (i == 0) {
-								index.add(jsonrow.getString(j)); // collect the
+								mIndex.add(jsonrow.getString(j)); // collect the
 																	// index
 																	// alone
 							} else if (i > 0 && j == 0) // collect the course
 														// names
 														// alone
 							{
-								groupList.add(jsonrow.getString(j));
+								mGroupList.add(jsonrow.getString(j));
 							}
 						}
 					}
@@ -246,23 +253,24 @@ public class MainActivity extends FragmentActivity {
 						jsonrow = jsontable.getJSONArray(i);
 						subjectmarktemp = new HashMap<String, String>();
 						for (int j = 1; j < jsonrow.length(); j++) {
-							subjectmarktemp.put(index.get(j),
+							subjectmarktemp.put(mIndex.get(j),
 									jsonrow.getString(j));
 						}
-						subjectmarks.put(groupList.get(i - 1), subjectmarktemp);
+						mSubjectMarks.put(mGroupList.get(i - 1),
+								subjectmarktemp);
 					}
 
 					Groupmarks testwisemarks;
 					JSONArray indexjsonarray = new JSONArray();
 					indexjsonarray = jsontable.getJSONArray(0);
 					Marks marksobject = new Marks();
-					testwisesparsearray = new SparseArray<Groupmarks>();
+					mTestwiseSparseArray = new SparseArray<Groupmarks>();
 					for (int i = 1; i < indexjsonarray.length(); i++) {
 						if (indexjsonarray.getString(i).compareTo("*") == 0)
 							continue;
 						testwisemarks = new Groupmarks(
 								indexjsonarray.getString(i));
-						Log.d("DEBUG", indexjsonarray.getString(i));
+						Log.d("camark", indexjsonarray.getString(i));
 						marksobject = new Marks();
 						Map<String, String> map = new HashMap<String, String>();
 						for (int j = 1; j < jsontable.length(); j++) {
@@ -273,22 +281,22 @@ public class MainActivity extends FragmentActivity {
 						}
 
 						testwisemarks.marks.add(marksobject);
-						testwisesparsearray.append(i - 1, testwisemarks);
+						mTestwiseSparseArray.append(i - 1, testwisemarks);
 					}
-					testwisesparsearraylist.add(testwisesparsearray);
-					Log.d("DEBUG", "testwisesparsearraylist: "
-							+ testwisesparsearraylist.size());
+					mTestwiseSparseArrayList.add(mTestwiseSparseArray);
+					Log.d("camark", "testwisesparsearraylist: "
+							+ mTestwiseSparseArrayList.size());
 
-					subjectwisesparsearray = new SparseArray<Groupmarks>();
+					mSubjectwiseSparseArray = new SparseArray<Groupmarks>();
 					Marks temp;
 					Map<String, String> tempmap = new HashMap<String, String>();
 					Groupmarks groupMarks = null;
 					int i = 0;
-					for (Entry entry : subjectmarks.entrySet()) {
+					for (Entry entry : mSubjectMarks.entrySet()) {
 
 						groupMarks = new Groupmarks((String) entry.getKey());
 						temp = new Marks();
-						tempmap = subjectmarks.get(entry.getKey());
+						tempmap = mSubjectMarks.get(entry.getKey());
 						for (Entry subentry : tempmap.entrySet()) {
 							String key = subentry.getKey().toString();
 							String value = subentry.getValue().toString();
@@ -303,12 +311,12 @@ public class MainActivity extends FragmentActivity {
 							temp.child.put(key, value);
 						}
 						groupMarks.marks.add(temp);
-						subjectwisesparsearray.append(i, groupMarks);
+						mSubjectwiseSparseArray.append(i, groupMarks);
 						i++;
 					}
-					subjectwisesparsearraylist.add(subjectwisesparsearray);
-					Log.d("DEBUG", "subjectwisesparsearraylist: "
-							+ subjectwisesparsearraylist.size());
+					mSubjectwiseSparseArrayList.add(mSubjectwiseSparseArray);
+					Log.d("camark", "subjectwisesparsearraylist: "
+							+ mSubjectwiseSparseArrayList.size());
 				}// End of jsontable forloop
 
 			} catch (Exception e) {
@@ -320,79 +328,9 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			// view1.setText(result);
-			/*
-			 * explistadapter = new ExpandableListAdapter(activity,
-			 * subjectwisesparsearraylist.get(0));
-			 * expListView.setAdapter(explistadapter);
-			 * 
-			 * expListView.setOnChildClickListener(new OnChildClickListener() {
-			 * 
-			 * @Override public boolean onChildClick(ExpandableListView parent,
-			 * View v, int groupPosition, int childPosition, long id) {
-			 * 
-			 * // TODO Auto-generated method stub return false; } });
-			 */
-			// initializeExpListViewForSubjectwiseMarks();
-			// initializeAdapterForSubjectwiseMarks();
-
 			displaySubjectwiseMarks();
-
-			progress1.setVisibility(View.INVISIBLE);
+			mLoadingProgress.setVisibility(View.INVISIBLE);
 		}
 	}
 
-	private void initializeExpListViewForSubjectwiseMarks() {
-		expandableListView.clear();
-		LinearLayout expListLayout = (LinearLayout) findViewById(R.id.expList);
-		expListLayout.removeAllViews();
-		LayoutInflater layoutInflater = getLayoutInflater();
-		View view;
-		for (int i = 0; i < subjectwisesparsearraylist.size(); i++) {
-			view = layoutInflater.inflate(R.layout.list_expandable_list,
-					expListLayout, false);
-			ExpandableListView expListView = (ExpandableListView) view
-					.findViewById(R.id.mark_list);
-			expandableListView.add(expListView);
-			expListLayout.addView(view);
-		}
-	}
-
-	private void initializeExpListViewForTestwiseMarks() {
-		expandableListView.clear();
-		LinearLayout expListLayout = (LinearLayout) findViewById(R.id.expList);
-		expListLayout.removeAllViews();
-		LayoutInflater layoutInflater = getLayoutInflater();
-		View view;
-		for (int i = 0; i < testwisesparsearraylist.size(); i++) {
-			view = layoutInflater.inflate(R.layout.list_expandable_list,
-					expListLayout, false);
-			ExpandableListView expListView = (ExpandableListView) view
-					.findViewById(R.id.mark_list);
-			expandableListView.add(expListView);
-			expListLayout.addView(view);
-		}
-	}
-
-	private void initializeAdapterForSubjectwiseMarks() {
-		int count = 0;
-		for (int i = 0; i < subjectwisesparsearraylist.size(); i++) {
-			ExpandableListView expView = expandableListView.get(count);
-			explistadapter = new ExpandableListAdapter(activity,
-					subjectwisesparsearraylist.get(i));
-			expView.setAdapter(explistadapter);
-			count++;
-		}
-	}
-
-	private void initializeAdapterForTesttwiseMarks() {
-		int count = 0;
-		for (int i = 0; i < testwisesparsearraylist.size(); i++) {
-			ExpandableListView expView = expandableListView.get(count);
-			explistadapter = new ExpandableListAdapter(activity,
-					testwisesparsearraylist.get(i));
-			expView.setAdapter(explistadapter);
-			count++;
-		}
-	}
 }

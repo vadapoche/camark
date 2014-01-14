@@ -55,27 +55,24 @@
         android:textSize="22sp"
         android:textStyle="bold" />
 
-    <LinearLayout
-        android:id="@+id/warninglayout"
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@null"
+        android:onClick="showDevelopers"
+        android:src="@drawable/selector_developer_icon" />
+
+    <com.columbusagain.camark.view.MyTextView
+        android:id="@+id/noInternetMessage"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:orientation="horizontal"
-        android:alpha="0.7"
-        android:background="#252525" >
-        
-        <TextView 
-            android:id="@+id/warningtext"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textColor="#FFFFFF"
-            android:gravity="center"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:text="No internet connection">
-            
-        </TextView>        
-    </LinearLayout>
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/black"
+        android:gravity="center"
+        android:text="No Internet Connection"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

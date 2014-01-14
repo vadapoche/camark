@@ -11,9 +11,8 @@
 
     <ProgressBar
         android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_centerInParent="true" />
 
     <LinearLayout
@@ -125,5 +124,17 @@
         android:layout_below="@+id/spinner1"
         android:orientation="vertical" >
     </LinearLayout>
+
+    <com.columbusagain.camark.view.MyTextView
+        android:id="@+id/noInternetMessage"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/black"
+        android:gravity="center"
+        android:text="No Internet Connection"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
