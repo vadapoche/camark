@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -52,7 +53,15 @@ public class MainActivity extends FragmentActivity {
 	private List<String> mIndex;
 
 	private Activity mActivity;
+	
+	private MyTextView NameView;
+	
+	private MyTextView RollnoView;
 
+	private String name;
+	
+	private String rollno;
+	
 	private Spinner mSpinner;
 
 	private SparseArray<Groupmarks> mSubjectwiseSparseArray;
@@ -62,6 +71,8 @@ public class MainActivity extends FragmentActivity {
 	private List<SparseArray<Groupmarks>> mTestwiseSparseArrayList = new ArrayList<SparseArray<Groupmarks>>();
 
 	private ViewPager subjectwisePager, testwisePager;
+	
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +83,12 @@ public class MainActivity extends FragmentActivity {
 		mLoadingProgress = (ProgressBar) findViewById(R.id.progressBar1);
 		subjectwisePager = (ViewPager) findViewById(R.id.subjectWiseMarksPager);
 		testwisePager = (ViewPager) findViewById(R.id.testWiseMarksPager);
+		NameView	=	 (MyTextView) findViewById(R.id.studentName);
+		RollnoView  = (MyTextView) findViewById(R.id.studentRollNumber);
+		
 		Log.d("camark", "start");
 		new FetchJson()
-				.execute("http://citibytes.columbusagain.com/camark/striptable.php?rollno="
+				.execute("http://camark.vadapoche.in/striptable.php?rollno="
 						+ rollno);
 		mActivity = this;
 		mSpinner = (Spinner) findViewById(R.id.spinner1);
@@ -221,9 +235,12 @@ public class MainActivity extends FragmentActivity {
 				reader.close();
 				in.close();
 				urlconnection.disconnect();
-				JSONArray array = new JSONArray(result);
+				JSONObject object = new JSONObject(result);
+				JSONArray array = object.getJSONArray("data");
+				name			= object.getString("name");
+				rollno			=	object.getString("rollno");
 				result = array.getString(0);
-
+					
 				for (int k = 0; k < array.length(); k++) {
 					Log.d("camark", "k: " + array.length());
 					JSONArray jsontable = array.getJSONArray(k);
@@ -330,6 +347,9 @@ public class MainActivity extends FragmentActivity {
 		protected void onPostExecute(String result) {
 			displaySubjectwiseMarks();
 			mLoadingProgress.setVisibility(View.INVISIBLE);
+			Log.d("DEBUG","rollno");
+			RollnoView.setText(rollno);
+			NameView.setText(name);
 		}
 	}
 
