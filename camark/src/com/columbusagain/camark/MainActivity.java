@@ -26,6 +26,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -33,6 +34,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
@@ -53,15 +55,15 @@ public class MainActivity extends FragmentActivity {
 	private List<String> mIndex;
 
 	private Activity mActivity;
-	
+
 	private MyTextView NameView;
-	
+
 	private MyTextView RollnoView;
 
 	private String name;
-	
+
 	private String rollno;
-	
+
 	private Spinner mSpinner;
 
 	private SparseArray<Groupmarks> mSubjectwiseSparseArray;
@@ -71,8 +73,8 @@ public class MainActivity extends FragmentActivity {
 	private List<SparseArray<Groupmarks>> mTestwiseSparseArrayList = new ArrayList<SparseArray<Groupmarks>>();
 
 	private ViewPager subjectwisePager, testwisePager;
-	
-	
+
+	private LinearLayout dots_scrollbar_holder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +84,13 @@ public class MainActivity extends FragmentActivity {
 		String rollno = intent.getExtras().getString("rollno").trim();
 		mLoadingProgress = (ProgressBar) findViewById(R.id.progressBar1);
 		subjectwisePager = (ViewPager) findViewById(R.id.subjectWiseMarksPager);
+		subjectwisePager.setOnPageChangeListener(subjectwiseListener);
 		testwisePager = (ViewPager) findViewById(R.id.testWiseMarksPager);
-		NameView	=	 (MyTextView) findViewById(R.id.studentName);
-		RollnoView  = (MyTextView) findViewById(R.id.studentRollNumber);
-		
+		testwisePager.setOnPageChangeListener(testwisePagerLister);
+		NameView = (MyTextView) findViewById(R.id.studentName);
+		RollnoView = (MyTextView) findViewById(R.id.studentRollNumber);
+		dots_scrollbar_holder = (LinearLayout) findViewById(R.id.dotsScrollbarHolder);
+
 		Log.d("camark", "start");
 		new FetchJson()
 				.execute("http://camark.vadapoche.in/striptable.php?rollno="
@@ -125,6 +130,12 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 
+	}
+
+	public void updateIndicator(int currentPage, int count) {
+		dots_scrollbar_holder.removeAllViews();
+		DotsScrollBar.createDotScrollBar(this, dots_scrollbar_holder,
+				currentPage, count);
 	}
 
 	@Override
@@ -167,7 +178,30 @@ public class MainActivity extends FragmentActivity {
 				getSupportFragmentManager(), fragments);
 		pageAdapter.notifyDataSetChanged();
 		testwisePager.setAdapter(pageAdapter);
+		updateIndicator(0, fragments.size());
 	}
+
+	OnPageChangeListener testwisePagerLister = new OnPageChangeListener() {
+
+		@Override
+		public void onPageSelected(int arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onPageScrollStateChanged(int position) {
+			Log.d("Jiffle", "current item" + position);
+			updateIndicator(testwisePager.getCurrentItem(),
+					testwisePager.getChildCount());
+		}
+	};
 
 	private void displaySubjectwiseMarks() {
 		testwisePager.setVisibility(View.GONE);
@@ -179,7 +213,29 @@ public class MainActivity extends FragmentActivity {
 				getSupportFragmentManager(), fragments);
 		pageAdapter.notifyDataSetChanged();
 		subjectwisePager.setAdapter(pageAdapter);
+		updateIndicator(0, fragments.size());
 	}
+
+	OnPageChangeListener subjectwiseListener = new OnPageChangeListener() {
+
+		@Override
+		public void onPageSelected(int arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onPageScrollStateChanged(int position) {
+			updateIndicator(subjectwisePager.getCurrentItem(),
+					subjectwisePager.getChildCount());
+		}
+	};
 
 	private List<Fragment> getFragments(int count,
 			List<SparseArray<Groupmarks>> sparseArrayList) {
@@ -237,10 +293,10 @@ public class MainActivity extends FragmentActivity {
 				urlconnection.disconnect();
 				JSONObject object = new JSONObject(result);
 				JSONArray array = object.getJSONArray("data");
-				name			= object.getString("name");
-				rollno			=	object.getString("rollno");
+				name = object.getString("name");
+				rollno = object.getString("rollno");
 				result = array.getString(0);
-					
+
 				for (int k = 0; k < array.length(); k++) {
 					Log.d("camark", "k: " + array.length());
 					JSONArray jsontable = array.getJSONArray(k);
@@ -347,7 +403,7 @@ public class MainActivity extends FragmentActivity {
 		protected void onPostExecute(String result) {
 			displaySubjectwiseMarks();
 			mLoadingProgress.setVisibility(View.INVISIBLE);
-			Log.d("DEBUG","rollno");
+			Log.d("DEBUG", "rollno");
 			RollnoView.setText(rollno);
 			NameView.setText(name);
 		}
