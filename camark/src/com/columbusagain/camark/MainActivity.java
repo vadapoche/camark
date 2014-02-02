@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -37,6 +38,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.columbusagain.camark.view.MyTextView;
 
@@ -253,10 +255,10 @@ public class MainActivity extends FragmentActivity {
 		return true;
 	}
 
-	class FetchJson extends AsyncTask<String, Integer, String> {
+	class FetchJson extends AsyncTask<String, Integer, JSONObject> {
 
 		@Override
-		protected String doInBackground(String... params) {
+		protected JSONObject doInBackground(String... params) {
 			mLoadingProgress.setVisibility(View.VISIBLE);
 			URL url;
 			HttpURLConnection urlconnection = null;
@@ -264,7 +266,7 @@ public class MainActivity extends FragmentActivity {
 			String result = null;
 			mIndex = new ArrayList<String>();
 			mGroupList = new ArrayList<String>();
-
+			JSONObject object=null;
 			try {
 				url = new URL(params[0]);
 				urlconnection = (HttpURLConnection) url.openConnection();
@@ -291,8 +293,11 @@ public class MainActivity extends FragmentActivity {
 				reader.close();
 				in.close();
 				urlconnection.disconnect();
-				JSONObject object = new JSONObject(result);
+				object = new JSONObject(result);
+				if(object.getString("status").trim().equals("200"))
+				{
 				JSONArray array = object.getJSONArray("data");
+				
 				name = object.getString("name");
 				rollno = object.getString("rollno");
 				result = array.getString(0);
@@ -391,21 +396,39 @@ public class MainActivity extends FragmentActivity {
 					Log.d("camark", "subjectwisesparsearraylist: "
 							+ mSubjectwiseSparseArrayList.size());
 				}// End of jsontable forloop
-
+				}
+				
 			} catch (Exception e) {
+				Log.d("DEBUG","inside doInBackground: "+e.toString());
 				return null;
 			}
-			return result;
+			return (JSONObject) object;
 
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
-			displaySubjectwiseMarks();
-			mLoadingProgress.setVisibility(View.INVISIBLE);
-			Log.d("DEBUG", "rollno");
-			RollnoView.setText(rollno);
-			NameView.setText(name);
+		protected void onPostExecute(JSONObject result) {
+			try {
+				if(result.getString("status").toString().trim().equals("600"))
+				{
+					mLoadingProgress.setVisibility(View.INVISIBLE);
+					Toast.makeText(mActivity, "Enter a valid rollno", Toast.LENGTH_LONG).show();
+				}
+				else
+				{
+					displaySubjectwiseMarks();
+					mLoadingProgress.setVisibility(View.INVISIBLE);
+					Log.d("DEBUG", "rollno");
+					RollnoView.setText(rollno);
+					NameView.setText(name);		
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				Log.d("DEBUG","inside doInBackground: "+e.toString());
+
+				e.printStackTrace();
+			}
+			
 		}
 	}
 

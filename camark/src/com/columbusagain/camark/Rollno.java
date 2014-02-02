@@ -28,9 +28,9 @@ public class Rollno extends Activity {
 		setContentView(R.layout.activity_rollno);
 		mRollNumber = (EditText) findViewById(R.id.rollnotext);
 		mSubmit = (Button) findViewById(R.id.rollnobtn);
-		mRollNumber.setText("10P212");
+		mActivity = this;
 		mSubmit.setOnClickListener(new OnClickListener() {
-
+		
 			@Override
 			public void onClick(View v) {
 				if (!mInternetAvailable) {
@@ -39,7 +39,7 @@ public class Rollno extends Activity {
 							.show();
 					return;
 				}
-				if (mRollNumber.getText().toString().compareTo("") == 0) {
+				if (mRollNumber.getText().toString().trim().length()==0) {
 					Toast.makeText(mActivity, "Please enter a roll number",
 							Toast.LENGTH_SHORT).show();
 				} else {
