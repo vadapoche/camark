@@ -1,4 +1,4 @@
-package com.columbusagain.camark;
+package com.vadapoche.camark;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,7 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.columbusagain.camark.view.MyTextView;
+import com.vadapoche.camark.R;
+import com.vadapoche.camark.view.MyTextView;
 
 public class Rollno extends Activity {
 

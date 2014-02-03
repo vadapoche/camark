@@ -1,9 +1,8 @@
-package com.columbusagain.camark;
+package com.vadapoche.camark;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -16,6 +15,7 @@ import android.webkit.WebView.FindListener;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.vadapoche.camark.R;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 

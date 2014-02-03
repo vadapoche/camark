@@ -38,7 +38,7 @@
         <requestFocus />
     </EditText>
 
-    <com.columbusagain.camark.view.MyButton
+    <com.vadapoche.camark.view.MyButton
         android:id="@+id/rollnobtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
         android:onClick="showDevelopers"
         android:src="@drawable/selector_developer_icon" />
 
-    <com.columbusagain.camark.view.MyTextView
+    <com.vadapoche.camark.view.MyTextView
         android:id="@+id/noInternetMessage"
         android:layout_width="match_parent"
         android:layout_height="50dp"

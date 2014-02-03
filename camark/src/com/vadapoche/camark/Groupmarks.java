@@ -1,4 +1,4 @@
-package com.columbusagain.camark;
+package com.vadapoche.camark;
 
 import java.io.Serializable;
 import java.util.ArrayList;

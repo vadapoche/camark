@@ -23,7 +23,7 @@
         android:layout_marginTop="15dp"
         android:orientation="horizontal" >
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
@@ -32,7 +32,7 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
@@ -41,7 +41,7 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:id="@+id/studentName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -59,13 +59,13 @@
         android:layout_marginTop="15dp"
         android:orientation="horizontal" >
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:textSize="18sp" />
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
@@ -74,7 +74,7 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:id="@+id/studentRollNumber"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
         android:orientation="vertical" >
     </LinearLayout>
 
-    <com.columbusagain.camark.view.MyTextView
+    <com.vadapoche.camark.view.MyTextView
         android:id="@+id/noInternetMessage"
         android:layout_width="match_parent"
         android:layout_height="50dp"

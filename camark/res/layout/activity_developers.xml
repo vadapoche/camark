@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Developers" >
 
-    <com.columbusagain.camark.view.MyTextView
+    <com.vadapoche.camark.view.MyTextView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         android:layout_margin="10dp"
         android:orientation="vertical" >
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -44,7 +44,7 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -53,7 +53,7 @@
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -68,7 +68,7 @@
             android:layout_marginTop="10dp"
             android:background="@android:color/black" />
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -78,7 +78,7 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -87,7 +87,7 @@
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
-        <com.columbusagain.camark.view.MyTextView
+        <com.vadapoche.camark.view.MyTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

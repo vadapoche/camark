@@ -1,4 +1,4 @@
-package com.columbusagain.camark;
+package com.vadapoche.camark;
 
 import android.app.ExpandableListActivity;
 import android.database.DataSetObserver;
@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import com.vadapoche.camark.R;
 
 public class MyFragment extends Fragment {
 
@@ -39,7 +40,7 @@ public class MyFragment extends Fragment {
 
 		ExpandableListView expListView = (ExpandableListView) v
 				.findViewById(R.id.mark_list);
-		explistadapter = new com.columbusagain.camark.ExpandableListAdapter(
+		explistadapter = new com.vadapoche.camark.ExpandableListAdapter(
 				getActivity(), sparseArrayGroups);
 		expListView.setAdapter(explistadapter);
 		return v;

@@ -1,4 +1,4 @@
-package com.columbusagain.camark;
+package com.vadapoche.camark;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import com.vadapoche.camark.R;
 
 public class DotsScrollBar {
 

@@ -1,4 +1,4 @@
-package com.columbusagain.camark;
+package com.vadapoche.camark;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

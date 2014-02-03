@@ -1,4 +1,4 @@
-package com.columbusagain.camark;
+package com.vadapoche.camark;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -40,7 +40,8 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.columbusagain.camark.view.MyTextView;
+import com.vadapoche.camark.R;
+import com.vadapoche.camark.view.MyTextView;
 
 public class MainActivity extends FragmentActivity {
 

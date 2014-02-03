@@ -1,39 +1,40 @@
-package com.columbusagain.camark.view;
+package com.vadapoche.camark.view;
 
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.TextView;
+import android.widget.Button;
 
-public class MyTextView extends TextView {
+public class MyButton extends Button {
 
-	public MyTextView(Context context, AttributeSet attrs, int defStyle) {
+	public MyButton(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
 	}
 
-	public MyTextView(Context context, AttributeSet attrs) {
+	public MyButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
 
-	public MyTextView(Context context) {
+	public MyButton(Context context) {
 		super(context);
 		init();
 	}
 
 	private void init() {
+
 		try{
 		Typeface typeface = Typeface.createFromAsset(getContext().getAssets(),
-				"fonts/corpidcdlfbold.ttf");
+				"fonts/corpidcdlfbold.otf");
 		setTypeface(typeface);
 		setPaintFlags(getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
 		}
 		catch(Exception e)
 		{
-			Log.e("typeface","corpidcdlfbold.otf");
+			Log.e("typeface",e.toString());
 		}
 
 	}

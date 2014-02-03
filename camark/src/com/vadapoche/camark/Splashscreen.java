@@ -1,10 +1,11 @@
-package com.columbusagain.camark;
+package com.vadapoche.camark;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
+import com.vadapoche.camark.R;
 
 public class Splashscreen extends Activity {
 

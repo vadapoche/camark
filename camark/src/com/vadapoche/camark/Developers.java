@@ -1,8 +1,9 @@
-package com.columbusagain.camark;
+package com.vadapoche.camark;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import com.vadapoche.camark.R;
 
 public class Developers extends Activity {
 
