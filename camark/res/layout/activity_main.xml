@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/topmargin_namelayout"
         android:orientation="horizontal" >
 
         <com.vadapoche.camark.view.MyTextView
@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
-            android:text="NAME:"
+            android:text="NAME"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -56,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nameLayout"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/topmargin_rollnolayout"
         android:orientation="horizontal" >
 
         <com.vadapoche.camark.view.MyTextView
@@ -69,7 +69,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
-            android:text="ROLL NUMBER:"
+            android:text="ROLLNO"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -89,7 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rollNumberLayout"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="@dimen/topmargin_spinner"
         android:background="@drawable/btn_dropdown" />
 
     <android.support.v4.view.ViewPager
@@ -112,6 +112,7 @@
         android:id="@+id/dotsScrollbarHolder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="bottom"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
@@ -123,6 +124,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/spinner1"
+        android:layout_above="@+id/dotsScrollbarHolder"
         android:orientation="vertical" >
     </LinearLayout>
 

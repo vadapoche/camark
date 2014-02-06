@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Tech Scoreboard</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_rollno">Rollno</string>
+    <string name="title_activity_splashscreen">Tech Scoreboard</string>
+    <string name="title_activity_developers">Developers</string>
+
+</resources>

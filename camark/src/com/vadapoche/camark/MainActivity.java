@@ -37,6 +37,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -92,7 +93,7 @@ public class MainActivity extends FragmentActivity {
 		testwisePager.setOnPageChangeListener(testwisePagerLister);
 		NameView = (MyTextView) findViewById(R.id.studentName);
 		RollnoView = (MyTextView) findViewById(R.id.studentRollNumber);
-		dots_scrollbar_holder = (LinearLayout) findViewById(R.id.dotsScrollbarHolder);
+		dots_scrollbar_holder =  (LinearLayout)findViewById(R.id.dotsScrollbarHolder);
 
 		Log.d("camark", "start");
 		new FetchJson()
@@ -143,6 +144,8 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	protected void onStart() {
+		super.onStart();
+
 		super.onStart();
 		mInternetAvailable = NetworkChecker.isConnected(MainActivity.this);
 		MyTextView errorMsg = (MyTextView) findViewById(R.id.noInternetMessage);
